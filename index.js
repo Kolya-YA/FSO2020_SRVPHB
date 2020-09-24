@@ -25,8 +25,23 @@ const persons = [
   },
 ]
 
+app.get('/info', (req, res) => {
+  const resString = `
+  <p>Phonebook has info for ${persons.length} people.</p>
+  <p>${new Date()}</p>
+  `
+  res.send(resString)
+})
+
 app.get('/api/persons', (req, res) => {
   res.json(persons)
+})
+
+app.get('/api/persons/:id', (req, res) => {
+  const id = +req.params.id
+  const person = persons.find(p => p.id === id)
+  if (!person) return res.status(404).end()
+    res.json(person)
 })
 
 const PORT = 3001
