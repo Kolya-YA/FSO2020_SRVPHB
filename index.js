@@ -1,4 +1,5 @@
 const express = require('express')
+const cors = require('cors')
 const morgan = require('morgan')
 
 morgan.token('post-load', req => {
@@ -9,6 +10,7 @@ const postStr = ':method :url :status :res[content-length] - :response-time ms :
 const app = express()
 
 app.use(express.json())
+app.use(cors())
 app.use(morgan('tiny', {
   skip: req => req.method === 'POST'
 }))
