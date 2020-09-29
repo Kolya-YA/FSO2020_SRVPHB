@@ -42,7 +42,7 @@ let persons = [
   },
 ]
 
-const generateNewId = Math.ceil((Math.random() * 100000))
+const generateNewId = () => Math.ceil(Math.random() * 100000)
 
 app.post('/api/persons', (req, res) => {
   const body = req.body
@@ -61,7 +61,7 @@ app.post('/api/persons', (req, res) => {
   const newPerson = {
     name: body.name,
     number: body.number,
-    id: generateNewId
+    id: generateNewId()
   }
 
   persons = persons.concat(newPerson)
