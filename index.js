@@ -45,39 +45,25 @@ let persons = [
   },
 ]
 
-app.post('/api/persons', (req, res) => {
-  const body = req.body
-
-  if (!(body.name && body.number)) {
-    return res.status(400).json({ 
-      error: 'Name or number missing'
-    })
-  }
-
-  const updateExistingPerson = name => {
-    console.log(`Person with name ${name} existing.Name must be unique`)
-  }
-
-  const addNewPerson = (name, number) => {
-    const newPerson = new Person({ name, number })
+app.post('/api/persons', (req, res, next) => {
+  const newPerson = new Person({
+    name: req.body.name,
+    number: req.body.number
+  })
   
-    newPerson.save().then(addedPerson => {
+  newPerson.save()
+    .then(addedPerson => {
       res.json(addedPerson)
-    })
-  }
-  
-  Person.exists({ name: body.name})
-    .then(result => {
-      result
-        ? updateExistingPerson(body.name)
-        : addNewPerson(body.name, body.number)
     })
     .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
-  console.log('Req: ??? ', req.body)
-  Person.findByIdAndUpdate(req.params.id, {number: req.body.newNumber}, {new: true})
+  Person.findByIdAndUpdate(
+    req.params.id,
+    { number: req.body.newNumber },
+    { runValidators: true, context: 'query', new: true }
+  )
     .then(updatedPerson => {
       res.json(updatedPerson)
     })
@@ -128,10 +114,14 @@ app.use(unknownEndpoint)
 
 // Error handler
 const errorHandler = (error, req, res, next) => {
-  console.error('Request error: ', error.message)
+  console.error('Error name: ', error.name)
+  console.error('Error message: ', error.message)
   switch (error.name) {
-    case "CastError":
+    case 'CastError':
       res.status(400).send({ error: 'Malformatted ID', name: error.name, message: error.message})
+      break
+    case 'ValidationError':
+      res.status(400).send({ name: error.name, message: error.message })
       break
     default:
       next(error)
