@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon --trace-warnings index.js",
+    "dev": "nodemon index.js",
     "build:ui": "rm -rf build && cd ../FSO2020_Phonebook && npm run build --prod && cp -r build ../FSO2020_SrvPhB",
     "deploy": "git push heroku master",
     "deploy:full": "npm run build:ui && git add . && git commit -m 'UI build' && npm run deploy",
