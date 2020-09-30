@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const showPhonebook = () => {
   console.log('Phonebook:')
   Person.find({})
-    .then(persons =>{
+    .then(persons => {
       persons.forEach(person => {
         console.log(`${person.name} ${person.number}`)
       })
@@ -13,7 +13,7 @@ const showPhonebook = () => {
 }
 
 const addNewPerson = (name, number) => {
-  const personToAdd = new Person({name, number})
+  const personToAdd = new Person({ name, number })
   personToAdd.save()
     .then(result => {
       console.log(`Added ${result.name} number ${result.number} to phonebook`)
@@ -29,14 +29,13 @@ if (process.argv.length < 3) {
 
 const password = process.argv[2]
 
-
 const dbUrl = `mongodb+srv://phb_user:${password}@cluster0.knx84.mongodb.net/phonebook_app?retryWrites=true&w=majority`
 
 mongoose.connect(dbUrl, {
-  useNewUrlParser: true, 
-  useUnifiedTopology: true, 
-  useFindAndModify: false, 
-  useCreateIndex: true 
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+  useCreateIndex: true
 })
 
 const personSchema = new mongoose.Schema({
@@ -46,6 +45,9 @@ const personSchema = new mongoose.Schema({
 
 const Person = mongoose.model('Person', personSchema)
 
-process.argv.length === 3 
+
+console.log('Gogogoga')
+
+process.argv.length === 3
   ? showPhonebook()
   : addNewPerson(process.argv[3], process.argv[4])
