@@ -1,6 +1,8 @@
+require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
+const Person = require('./models/person')
 
 morgan.token('post-load', req => {
   return JSON.stringify(req.body)
@@ -55,19 +57,19 @@ app.post('/api/persons', (req, res) => {
     })
   }
   
-  if (persons.some(p => p.name === body.name)) {
-    return res.status(400).json({ 
-      error: 'Name must be unique'
-    })
-  }
-  const newPerson = {
+  // if (persons.some(p => p.name === body.name)) {
+  //   return res.status(400).json({ 
+  //     error: 'Name must be unique'
+  //   })
+  // }
+  const newPerson = new Person({
     name: body.name,
-    number: body.number,
-    id: generateNewId()
-  }
+    number: body.number
+  })
 
-  persons = persons.concat(newPerson)
-  res.json(newPerson)
+  newPerson.save().then(addedPerson => {
+    res.json(addedPerson)
+  })
 })
 
 app.get('/info', (req, res) => {
@@ -79,7 +81,10 @@ app.get('/info', (req, res) => {
 })
 
 app.get('/api/persons', (req, res) => {
-  res.json(persons)
+  Person.find({})
+    .then(persons => {
+      res.json(persons)
+      })
 })
 
 app.get('/api/persons/:id', (req, res) => {

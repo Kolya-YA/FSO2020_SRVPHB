@@ -29,7 +29,6 @@ if (process.argv.length < 3) {
 
 const password = process.argv[2]
 
-// 3jrTNdAq3sNrYqeB
 
 const dbUrl = `mongodb+srv://phb_user:${password}@cluster0.knx84.mongodb.net/phonebook_app?retryWrites=true&w=majority`
 
