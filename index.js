@@ -3,6 +3,7 @@ const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
 const Person = require('./models/person')
+const { response } = require('express')
 
 morgan.token('post-load', req => {
   return JSON.stringify(req.body)
@@ -88,19 +89,30 @@ app.get('/api/persons', (req, res) => {
 })
 
 app.get('/api/persons/:id', (req, res) => {
-  const id = +req.params.id
-  const person = persons.find(p => p.id === id)
-  if (!person) return res.status(404).end()
-  res.json(person)
+  Person.findById(req.params.id)
+    .then(person => {
+      person ? res.json(person) : res.status(404).end()
+    })
+    .catch(error => {
+      console.error('Request error: ', error)
+      res.status(400).send({ error: 'Malformatted ID', name: error.name, message: error.message})
+    })
 })
 
 app.delete('/api/persons/:id', (req, res) => {
-  const id = +req.params.id
-  persons = persons.filter(p => p.id !== id)
-  res.status(204).end()
+  Person.findByIdAndDelete(req.params.id)
+    .then(person => {
+      person ? res.json(person) : res.status(404).end()
+    })
+    .catch(error => {
+      console.error('Request error: ', error)
+      res.status(400).send({ error: 'Malformatted ID', name: error.name, message: error.message})
+    })
+  // persons = persons.filter(p => p.id !== id)
+  // res.status(204).end()
 })
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+  console.log(`Server running on port: ${PORT}`)
 })

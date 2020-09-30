@@ -12,7 +12,7 @@ mongoose.connect(dbUrl, {
     console.log('Connected to MongoDB')
   })
   .catch(error => {
-    console.log(`Erro connecting to MongoDB ${error.message}`)
+    console.log(`Error connecting to MongoDB ${error.message}`)
   })
 
 const personSchema = new mongoose.Schema({
@@ -25,8 +25,6 @@ personSchema.set('toJSON', {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
     delete returnedObject.__v
-    console.log('Doc: ', document)
-    console.log('Ret Obj: ', returnedObject)
   }
 })
 
